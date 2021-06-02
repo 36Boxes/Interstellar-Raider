@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA08268426681AA9003AFCC0 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA08268326681AA9003AFCC0 /* GameOverScene.swift */; };
+		CA1DF07026681F8900B87386 /* ADAM.CGPRO.otf in Resources */ = {isa = PBXBuildFile; fileRef = CA284C7D2667C74D00E0E5AF /* ADAM.CGPRO.otf */; };
+		CA1DF075266820F600B87386 /* HomeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DF074266820F600B87386 /* HomeScene.swift */; };
+		CA1DF07A2668234100B87386 /* LeaderboardsScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DF0792668234100B87386 /* LeaderboardsScene.swift */; };
+		CA1DF0802668253C00B87386 /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1DF07E2668253C00B87386 /* CustomTableViewCell.swift */; };
+		CA1DF0812668253C00B87386 /* CustomTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CA1DF07F2668253C00B87386 /* CustomTableViewCell.xib */; };
 		CA7735FA2667A4FB005E7A92 /* Boost.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA7735F92667A4FB005E7A92 /* Boost.atlas */; };
 		CA7735FF2667A698005E7A92 /* BackgroundImages.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA7735FE2667A698005E7A92 /* BackgroundImages.atlas */; };
 		CA7736042667A6A9005E7A92 /* BoostedBackground.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA7736032667A6A9005E7A92 /* BoostedBackground.atlas */; };
@@ -46,6 +52,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CA08268326681AA9003AFCC0 /* GameOverScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
+		CA1DF074266820F600B87386 /* HomeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScene.swift; sourceTree = "<group>"; };
+		CA1DF0792668234100B87386 /* LeaderboardsScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardsScene.swift; sourceTree = "<group>"; };
+		CA1DF07E2668253C00B87386 /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
+		CA1DF07F2668253C00B87386 /* CustomTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomTableViewCell.xib; sourceTree = "<group>"; };
 		CA284C7D2667C74D00E0E5AF /* ADAM.CGPRO.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ADAM.CGPRO.otf; sourceTree = "<group>"; };
 		CA7735F92667A4FB005E7A92 /* Boost.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Boost.atlas; sourceTree = "<group>"; };
 		CA7735FE2667A698005E7A92 /* BackgroundImages.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = BackgroundImages.atlas; sourceTree = "<group>"; };
@@ -141,6 +152,11 @@
 				CA284C7D2667C74D00E0E5AF /* ADAM.CGPRO.otf */,
 				CAB32B9D265FFA4500BF176C /* Assets.xcassets */,
 				CAB32B9F265FFA4500BF176C /* Info.plist */,
+				CA08268326681AA9003AFCC0 /* GameOverScene.swift */,
+				CA1DF074266820F600B87386 /* HomeScene.swift */,
+				CA1DF0792668234100B87386 /* LeaderboardsScene.swift */,
+				CA1DF07E2668253C00B87386 /* CustomTableViewCell.swift */,
+				CA1DF07F2668253C00B87386 /* CustomTableViewCell.xib */,
 			);
 			path = "Interstellar Raider";
 			sourceTree = "<group>";
@@ -272,10 +288,12 @@
 				CA7736182667A9F6005E7A92 /* purpleDiamond.atlas in Resources */,
 				CAB32B93265FFA4400BF176C /* GameScene.sks in Resources */,
 				CA77361D2667AA1D005E7A92 /* blueDiamond.atlas in Resources */,
+				CA1DF0812668253C00B87386 /* CustomTableViewCell.xib in Resources */,
 				CA7735FF2667A698005E7A92 /* BackgroundImages.atlas in Resources */,
 				CAB32B9E265FFA4500BF176C /* Assets.xcassets in Resources */,
 				CA7736042667A6A9005E7A92 /* BoostedBackground.atlas in Resources */,
 				CA77360E2667A9CF005E7A92 /* BoostedDoublePointsBackground.atlas in Resources */,
+				CA1DF07026681F8900B87386 /* ADAM.CGPRO.otf in Resources */,
 				CAB32B95265FFA4400BF176C /* Actions.sks in Resources */,
 				CA7736132667A9EC005E7A92 /* greenDiamond.atlas in Resources */,
 				CA7736272667B09D005E7A92 /* EnemyBlue.atlas in Resources */,
@@ -304,8 +322,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA1DF07A2668234100B87386 /* LeaderboardsScene.swift in Sources */,
 				CAB32B97265FFA4400BF176C /* GameScene.swift in Sources */,
 				CAB32B99265FFA4400BF176C /* GameViewController.swift in Sources */,
+				CA1DF0802668253C00B87386 /* CustomTableViewCell.swift in Sources */,
+				CA08268426681AA9003AFCC0 /* GameOverScene.swift in Sources */,
+				CA1DF075266820F600B87386 /* HomeScene.swift in Sources */,
 				CAB32B91265FFA4400BF176C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -18,6 +18,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
     var levelNumber = 0
     var lives = 3
     var count = 0
+    var AlreadyHasAnimation = false
     
     // SpriteKit Labels & nodes
     
@@ -61,7 +62,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         
         static let Asteroid: UInt32 = 8
         
-        static let DoublePoints: UInt32 = 16
+        static let BlueEnemy: UInt32 = 16
         
         static let GoldCoin: UInt32 = 32
         
@@ -229,7 +230,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
     }
     
     func changeScene(){
-        let destination = GameScene(size:self.size)
+        let destination = GameOverScene(size:self.size)
         destination.scaleMode = self.scaleMode
         let myTransition = SKTransition.fade(withDuration: 0.5)
         self.view!.presentScene(destination, transition: myTransition)
@@ -257,6 +258,13 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         bullet.run(ActionsToPerform)
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+
+        if currentGameState == gameState.DuringGame{
+        ShootBullet()
+        }
+    }
+    
     func createEnemy(image: String, name: String, category: UInt32){
         enemy = SKSpriteNode(imageNamed: image)
         enemy.name = name
@@ -277,20 +285,58 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         let randomXEnd = CGFloat.random(in: gameArea.minX..<gameArea.maxX)
         let startPoint = CGPoint(x: randomXStart, y: self.size.height * 1.2)
         let endPoint = CGPoint(x: randomXEnd, y: -self.size.height * 0.2)
-        var EnemyDecider = Int.random(in: 1..<6)
-        EnemyDecider = 1
+        let EnemyDecider = Int.random(in: 1..<8)
         if EnemyDecider == 1{
-            createEnemy(image: "E1", name: "EnemyRed", category: PhysicsCatergories.Enemy)
-            enemy.position = startPoint
-            enemy.zPosition = 2
-            self.addChild(enemy)
-
+            createEnemy(image: "E1", name: "Enemy", category: PhysicsCatergories.Enemy)
         }
+        if EnemyDecider == 2{
+            createEnemy(image: "RocketFlames1", name: "Enemy", category: PhysicsCatergories.Enemy)
+        }
+        if EnemyDecider == 3{
+            createEnemy(image: "Asteroid", name: "Asteroid", category: PhysicsCatergories.Asteroid)
+        }
+        if EnemyDecider == 4{
+            let Lucky = Int.random(in: 1..<4)
+            if Lucky == 3{
+                createEnemy(image: "BoostCoin", name: "Boost", category: PhysicsCatergories.GoldCoin)
+            }else{
+                createEnemy(image: "Asteroid", name: "Asteroid", category: PhysicsCatergories.Asteroid)
+            }
+        }
+        if EnemyDecider == 5{
+            let Lucky = Int.random(in: 1..<6)
+            if Lucky == 2{
+                createEnemy(image: "Blue1", name: "BlueDiamond", category: PhysicsCatergories.BlueDiamond)
+            }
+            else{
+                createEnemy(image: "GoldAsteroid", name: "GoldAsteroid", category: PhysicsCatergories.GoldAsteroid)
+            }
+        }
+        if EnemyDecider == 6{
+            createEnemy(image: "GoldAsteroid", name: "GoldAsteroid", category: PhysicsCatergories.GoldAsteroid)
+        }
+        if EnemyDecider == 7{
+            let Lucky = Int.random(in: 1..<4)
+            if Lucky == 3{
+                createEnemy(image: "PurpleXP1", name: "DoubleXP", category: PhysicsCatergories.XPCoin)
+            }else{
+                createEnemy(image: "GoldAsteroid", name: "Asteroid", category: PhysicsCatergories.GoldAsteroid)
+            }
+        }
+        
+        enemy.position = startPoint
+        enemy.zPosition = 2
+        self.addChild(enemy)
         let anim = SKAction.animate(with: EnemyTextureArray, timePerFrame: 0.1)
         let redAnimForever = SKAction.repeatForever(anim)
         
         let aim = SKAction.animate(with: EnemyBlueTextureArray, timePerFrame: 0.1)
         let blueAnimForever = SKAction.repeatForever(aim)
+        
+        let diffX = endPoint.x - startPoint.x
+        let diffY = endPoint.y - startPoint.y
+        let amount2Rotate = atan2(diffY, diffX)
+        enemy.zRotation = amount2Rotate
         
         let moveEnemy = SKAction.move(to: endPoint, duration: 2)
         let rotate = SKAction.rotate(byAngle: 5, duration: 1)
@@ -303,8 +349,16 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         let RedEnemySequence = SKAction.group([redAnimForever, moveAndRemoveandLive])
         let BlueEnemySequence = SKAction.group([blueAnimForever, moveAndRemoveandLive])
         
-        if enemy.name == "EnemyRed"{enemy.run(RedEnemySequence)}
-        if enemy.name == "EnemyBlue"{enemy.run(BlueEnemySequence)}
+        if enemy.name == "Enemy"{
+            if EnemyDecider == 1{
+                enemy.run(RedEnemySequence)
+            }
+            if EnemyDecider == 2{
+                enemy.run(BlueEnemySequence)
+            }
+        
+        }
+    
         else{enemy.run(AsteroidSequence)}
     }
     
@@ -342,7 +396,6 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
     }
     
     func CheckRocketStatus(){
-        print(CurrentRocketMode)
         if CurrentRocketMode == RocketMode.Boosted{
             count -= 1
         }
@@ -426,7 +479,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         }
         
         for i in 1...EnemyBlueTextureAtlas.textureNames.count{
-            let TexName = "E\(i).png"
+            let TexName = "RocketFlames\(i).png"
             EnemyBlueTextureArray.append(SKTexture(imageNamed: TexName))
         }
         
@@ -471,5 +524,538 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         }
         
     }
+    
+    // Function called when 2 physics bodies make contact
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        
+        var body1 = SKPhysicsBody()
+        var body2 = SKPhysicsBody()
+        
+        let boostxpback = SKAction.animate(with: BoostedDoublePointsBackgroundTextureArray, timePerFrame: 0.02)
+        let boostedXPback4eva = SKAction.repeatForever(boostxpback)
+        
+        let boostback = SKAction.animate(with: BoostedBackgroundTextureArray, timePerFrame: 0.02)
+        let boostback4eva = SKAction.repeatForever(boostback)
+        
+        let xpback = SKAction.animate(with: DoublePointsBackgroundTextureArray, timePerFrame: 0.02)
+        let xpback4eva = SKAction.repeatForever(xpback)
+        
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask{
+            body1 = contact.bodyA
+            body2 = contact.bodyB
+        }else{
+            body1 = contact.bodyB
+            body2 = contact.bodyA
+        }
 
+        
+        // If the player hits the enemy
+        
+        if body1.categoryBitMask == PhysicsCatergories.Player && body2.categoryBitMask == PhysicsCatergories.Enemy{
+            
+            if CurrentRocketMode == RocketMode.BoostedDoubleXP{
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
+                body2.node?.removeFromParent()
+                addScore(number: 2)
+            }
+            else if CurrentRocketMode == RocketMode.DoubleXP{
+                if body1.node != nil{Explode(explodeposition: body1.node!.position, image: "explosion1red")}
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
+
+                body2.node?.removeFromParent()
+                
+                loselives()
+            }
+            else if CurrentRocketMode == RocketMode.Boosted{
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
+                body2.node?.removeFromParent()
+                addScore(number: 1)
+            }
+            else if CurrentRocketMode == RocketMode.Normal{
+                if body1.node != nil{Explode(explodeposition: body1.node!.position, image: "explosion1red")}
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
+
+                body2.node?.removeFromParent()
+                
+                loselives()
+            }
+        }
+        
+        // If the player runs into the gold coin
+        
+        else if body1.categoryBitMask == PhysicsCatergories.Player && body2.categoryBitMask == PhysicsCatergories.GoldCoin{
+            
+            // Since we hit the gold coin we want to give a bonus life and invunerable travel travel
+            // My thought process is to call a 30 second timer in which we set the rocketmode to boosted.
+            if CurrentRocketMode == RocketMode.DoubleXP{
+                CurrentRocketMode = RocketMode.BoostedDoubleXP
+                background.removeAction(forKey: "DoubleBack")
+                background.run(boostedXPback4eva, withKey: "DoubleBoostBack")
+                count = 10
+            }
+            else if CurrentRocketMode == RocketMode.Normal{
+                CurrentRocketMode = RocketMode.Boosted
+                background.removeAction(forKey: "StanBack")
+                background.run(boostback4eva, withKey: "BoostBack")
+                count = 10
+            }
+            body2.node?.removeFromParent()
+            
+        }
+        
+        // If the player runs into 2x coin
+        
+        else if body1.categoryBitMask == PhysicsCatergories.Player && body2.categoryBitMask == PhysicsCatergories.XPCoin{
+            
+            // Since we hit the 2X coin we want to give doublepoints
+            // My thought process is to call a 30 second timer in which we set the rocketmode to boosted.
+            if CurrentRocketMode == RocketMode.Boosted{
+                CurrentRocketMode = RocketMode.BoostedDoubleXP
+                background.removeAction(forKey: "DoubleBack")
+                background.run(boostedXPback4eva, withKey: "DoubleBoostBack")
+                count = 10
+            }
+            else if CurrentRocketMode == RocketMode.Normal{
+                CurrentRocketMode = RocketMode.DoubleXP
+                background.removeAction(forKey: "StanBack")
+                background.run(xpback4eva, withKey: "BoostBack")
+                count = 10
+            }
+            body2.node?.removeFromParent()
+        }
+        
+        // If the bullet hits the gold coin
+        
+        else if body1.categoryBitMask == PhysicsCatergories.Bullet && body2.categoryBitMask == PhysicsCatergories.GoldCoin{
+            if body2.node != nil{
+                
+                if body2.node!.position.y > self.size.height{
+                    return
+                }else{
+                    Explode(explodeposition: body2.node!.position, image: "explosion1gold")
+                    body2.node?.removeFromParent()
+                }
+        }
+        }
+        
+        // Bullet hits 2X Coin
+        
+        else if body1.categoryBitMask == PhysicsCatergories.Bullet && body2.categoryBitMask == PhysicsCatergories.XPCoin{
+            if body2.node != nil{
+                
+                if body2.node!.position.y > self.size.height{
+                    return
+                }else{
+                    Explode(explodeposition: body2.node!.position, image: "explosion1purple")
+                    body2.node?.removeFromParent()
+                }
+        }
+        }
+        
+        // If the bullet hits the enemy
+        else if body1.categoryBitMask == PhysicsCatergories.Bullet && body2.categoryBitMask == PhysicsCatergories.Enemy{
+            
+            if body2.node != nil{
+                // Check wether the enemy is on screen when the bullet makes contact
+                if body2.node!.position.y > self.size.height{
+                    return
+                }else{
+                    // we know this is on the screen so we want to show an explosion
+                    if CurrentRocketMode == RocketMode.BoostedDoubleXP{
+                        Explode(explodeposition: body2.node!.position, image: "explosion1red")
+                        addScore(number: 2)
+                    }
+                    else if CurrentRocketMode == RocketMode.DoubleXP{
+                        Explode(explodeposition: body2.node!.position, image: "explosion1red")
+                        addScore(number: 2)
+                    }
+                    else if CurrentRocketMode == RocketMode.Boosted{
+                        Explode(explodeposition: body2.node!.position, image: "explosion1red")
+                        addScore(number: 1)
+                    }
+                    else if CurrentRocketMode == RocketMode.Normal{
+                        Explode(explodeposition: body2.node!.position, image: "explosion1red")
+                        addScore(number: 1)
+                    }
+                }
+                body1.node?.removeFromParent()
+                body2.node?.removeFromParent()
+            }
+        }
+        
+        // If the bullet hits the asteroid
+        else if body1.categoryBitMask == PhysicsCatergories.Bullet && body2.categoryBitMask == PhysicsCatergories.Asteroid{
+            if body2.node != nil{
+                // Check wether the enemy is on screen when the bullet makes contact
+                if body2.node!.position.y > self.size.height{
+                    return
+                }else{
+                    let startofFragmentation = body2.node!.position
+                    Explode(explodeposition: body2.node!.position, image: "explosion1red")
+                    
+                    FragmentAsteroid(FragPosition: startofFragmentation)
+                    body1.node?.removeFromParent()
+                    body2.node?.removeFromParent()
+                }
+            }
+        }
+        
+        // If the bullet hits the GOLD asteroid
+        else if body1.categoryBitMask == PhysicsCatergories.Bullet && body2.categoryBitMask == PhysicsCatergories.GoldAsteroid{
+            if body2.node != nil{
+                // Check wether the enemy is on screen when the bullet makes contact
+                if body2.node!.position.y > self.size.height{
+                    return
+                }else{
+                    let startofFragmentation = body2.node!.position
+                    Explode(explodeposition: body2.node!.position, image: "explosion1purple")
+                    
+                    FragmentGoldAsteroid(FragPosition: startofFragmentation)
+                    body1.node?.removeFromParent()
+                    body2.node?.removeFromParent()
+                }
+            }
+        }
+        
+        // If the bullet hits the asteroid fragment
+        else if body1.categoryBitMask == PhysicsCatergories.Bullet && body2.categoryBitMask == PhysicsCatergories.AsteroidFragment{
+            if body2.node != nil{
+                // Check wether the enemy is on screen when the bullet makes contact
+                if body2.node!.position.y > self.size.height{
+                    return
+                }else{
+                    Explode(explodeposition: body2.node!.position, image: "explosion1red")
+                    body1.node?.removeFromParent()
+                    body2.node?.removeFromParent()
+                }
+            }
+        }
+        
+        // If the player hits the asteroid
+        else if body1.categoryBitMask == PhysicsCatergories.Player && body2.categoryBitMask == PhysicsCatergories.Asteroid{
+            
+            if CurrentRocketMode == RocketMode.BoostedDoubleXP{
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
+                body2.node?.removeFromParent()
+                addScore(number: 2)
+            }
+            else if CurrentRocketMode == RocketMode.DoubleXP{
+                if body1.node != nil{Explode(explodeposition: body1.node!.position, image: "explosion1red")}
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
+                
+                body2.node?.removeFromParent()
+                loselives()
+            }
+            else if CurrentRocketMode == RocketMode.Boosted{
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
+                body2.node?.removeFromParent()
+                addScore(number: 1)
+            }
+            else if CurrentRocketMode == RocketMode.Normal{
+                if body1.node != nil{Explode(explodeposition: body1.node!.position, image: "explosion1red")}
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
+
+                body2.node?.removeFromParent()
+                loselives()
+            }
+        }
+        
+        // If the player hits the GOLD asteroid
+        else if body1.categoryBitMask == PhysicsCatergories.Player && body2.categoryBitMask == PhysicsCatergories.GoldAsteroid{
+            
+            if CurrentRocketMode == RocketMode.BoostedDoubleXP{
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1blue")}
+                body2.node?.removeFromParent()
+                addScore(number: 10)
+            }
+            else if CurrentRocketMode == RocketMode.DoubleXP{
+                if body1.node != nil{Explode(explodeposition: body1.node!.position, image: "explosion1gold")}
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1green")}
+
+                body2.node?.removeFromParent()
+                loselives()
+            }
+            else if CurrentRocketMode == RocketMode.Boosted{
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
+                body2.node?.removeFromParent()
+                addScore(number: 5)
+            }
+            else if CurrentRocketMode == RocketMode.Normal{
+                if body1.node != nil{Explode(explodeposition: body1.node!.position, image: "explosion1gold")}
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1purple")}
+
+                body2.node?.removeFromParent()
+                loselives()
+            }
+        }
+        
+        // If the player hits an asteroid fragment
+        else if body1.categoryBitMask == PhysicsCatergories.Player && body2.categoryBitMask == PhysicsCatergories.AsteroidFragment{
+            
+            if CurrentRocketMode == RocketMode.BoostedDoubleXP{
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
+                body2.node?.removeFromParent()
+                addScore(number: 2)
+            }
+            else if CurrentRocketMode == RocketMode.DoubleXP{
+                if body1.node != nil{Explode(explodeposition: body1.node!.position, image: "explosion1red")}
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
+
+                body2.node?.removeFromParent()
+                loselives()
+            }
+            else if CurrentRocketMode == RocketMode.Boosted{
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
+                body2.node?.removeFromParent()
+                addScore(number: 1)
+            }
+            else if CurrentRocketMode == RocketMode.Normal{
+                if body1.node != nil{Explode(explodeposition: body1.node!.position,  image: "explosion1red")}
+                if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
+
+                body2.node?.removeFromParent()
+                loselives()
+            }
+        }
+        
+        // If the player hits a Purple diamond
+        
+        else if body1.categoryBitMask == PhysicsCatergories.Player && body2.categoryBitMask == PhysicsCatergories.PurpleDiamond{
+            
+            if CurrentRocketMode == RocketMode.BoostedDoubleXP{
+                body2.node?.removeFromParent()
+                addScore(number: 30)
+            }
+            else if CurrentRocketMode == RocketMode.DoubleXP{
+                body2.node?.removeFromParent()
+                addScore(number: 30)
+            }
+            else if CurrentRocketMode == RocketMode.Boosted{
+                body2.node?.removeFromParent()
+                addScore(number: 15)
+            }
+            else if CurrentRocketMode == RocketMode.Normal{
+                body2.node?.removeFromParent()
+                addScore(number: 15)
+            }
+            }
+        
+        // If the player hits the blue diamond
+        
+        else if body1.categoryBitMask == PhysicsCatergories.Player && body2.categoryBitMask == PhysicsCatergories.BlueDiamond{
+            
+            if CurrentRocketMode == RocketMode.BoostedDoubleXP{
+                body2.node?.removeFromParent()
+                addScore(number: 40)
+            }
+            else if CurrentRocketMode == RocketMode.DoubleXP{
+                body2.node?.removeFromParent()
+                addScore(number: 40)
+            }
+            else if CurrentRocketMode == RocketMode.Boosted{
+                body2.node?.removeFromParent()
+                addScore(number: 20)
+            }
+            else if CurrentRocketMode == RocketMode.Normal{
+                body2.node?.removeFromParent()
+                addScore(number: 20)
+            }
+            }
+        
+        // If the player hits the green diamond
+        
+        else if body1.categoryBitMask == PhysicsCatergories.Player && body2.categoryBitMask == PhysicsCatergories.GreenDiamond{
+            
+            if CurrentRocketMode == RocketMode.BoostedDoubleXP{
+                body2.node?.removeFromParent()
+                addScore(number: 30)
+            }
+            else if CurrentRocketMode == RocketMode.DoubleXP{
+                body2.node?.removeFromParent()
+                addScore(number: 30)
+            }
+            else if CurrentRocketMode == RocketMode.Boosted{
+                body2.node?.removeFromParent()
+                addScore(number: 15)
+            }
+            else if CurrentRocketMode == RocketMode.Normal{
+                body2.node?.removeFromParent()
+                addScore(number: 15)
+            }
+            }
+        
+        
+        // If a bullet hits a purple diamond
+        
+        else if body1.categoryBitMask == PhysicsCatergories.Bullet && body2.categoryBitMask == PhysicsCatergories.PurpleDiamond{
+            if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1purple")}
+            body1.node?.removeFromParent()
+            body2.node?.removeFromParent()
+            }
+        
+        // If a bullet hits a green diamond
+        
+        else if body1.categoryBitMask == PhysicsCatergories.Bullet && body2.categoryBitMask == PhysicsCatergories.BlueDiamond{
+            if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1blue")}
+            body1.node?.removeFromParent()
+            body2.node?.removeFromParent()
+            }
+        
+        // If a bullet hits a blue diamond
+        
+        else if body1.categoryBitMask == PhysicsCatergories.Bullet && body2.categoryBitMask == PhysicsCatergories.GreenDiamond{
+            if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1green")}
+            body1.node?.removeFromParent()
+            body2.node?.removeFromParent()
+            }
+    }
+    
+    func Explode(explodeposition: CGPoint, image: String){
+        let explosion = SKSpriteNode(imageNamed: image)
+        explosion.position = explodeposition
+        explosion.zPosition = 3
+        explosion.setScale(0)
+        self.addChild(explosion)
+        let scaleIn = SKAction.scale(to: 1, duration: 0.1)
+        let fade = SKAction.fadeOut(withDuration: 0.1)
+        let remove = SKAction.removeFromParent()
+        let explosionSequence = SKAction.sequence([scaleIn, fade, remove])
+        explosion.run(explosionSequence)
+    }
+
+    
+    func FragmentAsteroid(FragPosition: CGPoint){
+        let startPoint = FragPosition
+        let randomXEnd = CGFloat.random(in: gameArea.minX..<gameArea.maxX)
+        let randomXEnd2 = CGFloat.random(in: gameArea.minX..<gameArea.maxX)
+        let randomXEnd3 = CGFloat.random(in: gameArea.minX..<gameArea.maxX)
+        let endPoint = CGPoint(x: randomXEnd, y: -self.size.height * 0.2)
+        let endPoint2 = CGPoint(x: randomXEnd2, y: -self.size.height * 0.2)
+        let endPoint3 = CGPoint(x: randomXEnd3, y: -self.size.height * 0.2)
+        let enemy1 : SKSpriteNode
+        enemy1 = SKSpriteNode(imageNamed: "Asteroidfrag")
+        enemy1.name = "ROID"
+        enemy1.physicsBody = SKPhysicsBody(rectangleOf: enemy1.size)
+        enemy1.physicsBody!.affectedByGravity = false
+        enemy1.physicsBody!.categoryBitMask = PhysicsCatergories.AsteroidFragment
+        enemy1.physicsBody!.collisionBitMask = PhysicsCatergories.Enemy | PhysicsCatergories.Bullet
+        enemy1.physicsBody!.contactTestBitMask = PhysicsCatergories.Player | PhysicsCatergories.Bullet
+        enemy1.position = startPoint
+        enemy1.zPosition = 2
+        self.addChild(enemy1)
+        let enemy2 : SKSpriteNode
+        enemy2 = SKSpriteNode(imageNamed: "AsteroidFrag2")
+        enemy2.name = "ROID"
+        enemy2.physicsBody = SKPhysicsBody(rectangleOf: enemy2.size)
+        enemy2.physicsBody!.affectedByGravity = false
+        enemy2.physicsBody!.categoryBitMask = PhysicsCatergories.AsteroidFragment
+        enemy2.physicsBody!.collisionBitMask = PhysicsCatergories.Enemy | PhysicsCatergories.Bullet
+        enemy2.physicsBody!.contactTestBitMask = PhysicsCatergories.Player | PhysicsCatergories.Bullet
+        enemy2.position = startPoint
+        enemy2.zPosition = 2
+        self.addChild(enemy2)
+        let enemy3 : SKSpriteNode
+        enemy3 = SKSpriteNode(imageNamed: "asteroidfrag3")
+        enemy3.name = "ROID"
+        enemy3.physicsBody = SKPhysicsBody(rectangleOf: enemy3.size)
+        enemy3.physicsBody!.affectedByGravity = false
+        enemy3.physicsBody!.categoryBitMask = PhysicsCatergories.AsteroidFragment
+        enemy3.physicsBody!.collisionBitMask = PhysicsCatergories.Enemy | PhysicsCatergories.Bullet
+        enemy3.physicsBody!.contactTestBitMask = PhysicsCatergories.Player | PhysicsCatergories.Bullet
+        enemy3.position = startPoint
+        enemy3.zPosition = 2
+        self.addChild(enemy3)
+
+        
+        
+        let moveEnemy = SKAction.move(to: endPoint, duration: 1.5)
+        let moveEnemy2 = SKAction.move(to: endPoint2, duration: 1.5)
+        let moveEnemy3 = SKAction.move(to: endPoint3, duration: 1.5)
+        let deleteEnemy = SKAction.removeFromParent()
+        let enemySequence = SKAction.sequence([moveEnemy, deleteEnemy])
+        let enemySequence2 = SKAction.sequence([moveEnemy2, deleteEnemy])
+        let enemySequence3 = SKAction.sequence([moveEnemy3, deleteEnemy])
+        
+        if currentGameState == gameState.DuringGame{
+            enemy1.run(enemySequence)
+            enemy2.run(enemySequence2)
+            enemy3.run(enemySequence3)
+
+        }
+        
+        
+    }
+    
+    func FragmentGoldAsteroid(FragPosition: CGPoint){
+        let startPoint = FragPosition
+        let randomXEnd = CGFloat.random(in: gameArea.minX..<gameArea.maxX)
+        let randomXEnd2 = CGFloat.random(in: gameArea.minX..<gameArea.maxX)
+        let randomXEnd3 = CGFloat.random(in: gameArea.minX..<gameArea.maxX)
+        let endPoint = CGPoint(x: randomXEnd, y: -self.size.height * 0.2)
+        let endPoint2 = CGPoint(x: randomXEnd2, y: -self.size.height * 0.2)
+        let endPoint3 = CGPoint(x: randomXEnd3, y: -self.size.height * 0.2)
+        let enemy1 : SKSpriteNode
+        enemy1 = SKSpriteNode(imageNamed: "Purple1")
+        enemy1.name = "ROID"
+        enemy1.physicsBody = SKPhysicsBody(circleOfRadius: enemy1.size.width)
+        enemy1.physicsBody!.affectedByGravity = false
+        enemy1.physicsBody!.categoryBitMask = PhysicsCatergories.PurpleDiamond
+        enemy1.physicsBody!.collisionBitMask = PhysicsCatergories.Enemy | PhysicsCatergories.Bullet
+        enemy1.physicsBody!.contactTestBitMask = PhysicsCatergories.Player | PhysicsCatergories.Bullet
+        enemy1.position = startPoint
+        enemy1.zPosition = 2
+        self.addChild(enemy1)
+        let enemy2 : SKSpriteNode
+        enemy2 = SKSpriteNode(imageNamed: "Green1")
+        enemy2.name = "ROID"
+        enemy2.physicsBody = SKPhysicsBody(circleOfRadius: enemy2.size.width)
+        enemy2.physicsBody!.affectedByGravity = false
+        enemy2.physicsBody!.categoryBitMask = PhysicsCatergories.GreenDiamond
+        enemy2.physicsBody!.collisionBitMask = PhysicsCatergories.Enemy | PhysicsCatergories.Bullet
+        enemy2.physicsBody!.contactTestBitMask = PhysicsCatergories.Player | PhysicsCatergories.Bullet
+        enemy2.position = startPoint
+        enemy2.zPosition = 2
+        self.addChild(enemy2)
+        let enemy3 : SKSpriteNode
+        enemy3 = SKSpriteNode(imageNamed: "Blue1")
+        enemy3.name = "ROID"
+        enemy3.physicsBody = SKPhysicsBody(circleOfRadius: enemy3.size.width)
+        enemy3.physicsBody!.affectedByGravity = false
+        enemy3.physicsBody!.categoryBitMask = PhysicsCatergories.BlueDiamond
+        enemy3.physicsBody!.collisionBitMask = PhysicsCatergories.Enemy | PhysicsCatergories.Bullet
+        enemy3.physicsBody!.contactTestBitMask = PhysicsCatergories.Player | PhysicsCatergories.Bullet
+        enemy3.position = startPoint
+        enemy3.zPosition = 2
+        self.addChild(enemy3)
+
+        
+        let purpAnim = SKAction.animate(with:PurpleDiamondTextureArray, timePerFrame: 0.05)
+        let greenAnim = SKAction.animate(with:GreenDiamondTextureArray, timePerFrame: 0.05)
+        let blueAnim = SKAction.animate(with:BlueDiamondTextureArray, timePerFrame: 0.05)
+        let purpAnim4eva = SKAction.repeatForever(purpAnim)
+        let greenAnim4eva = SKAction.repeatForever(greenAnim)
+        let blueAnim4eva = SKAction.repeatForever(blueAnim)
+        let moveEnemy = SKAction.move(to: endPoint, duration: 1.5)
+        let moveEnemy2 = SKAction.move(to: endPoint2, duration: 1.5)
+        let moveEnemy3 = SKAction.move(to: endPoint3, duration: 1.5)
+        let deleteEnemy = SKAction.removeFromParent()
+        let enemySequence = SKAction.sequence([moveEnemy, deleteEnemy])
+        let enemySequence2 = SKAction.sequence([moveEnemy2, deleteEnemy])
+        let enemySequence3 = SKAction.sequence([moveEnemy3, deleteEnemy])
+        let PdSeq = SKAction.group([purpAnim4eva, enemySequence])
+        let GdSeq = SKAction.group([greenAnim4eva, enemySequence2])
+        let BdSeq = SKAction.group([blueAnim4eva, enemySequence3])
+
+        
+        if currentGameState == gameState.DuringGame{
+            enemy1.run(PdSeq)
+            enemy2.run(GdSeq)
+            enemy3.run(BdSeq)
+
+        }
+        
+        
+    }
+    
 }
