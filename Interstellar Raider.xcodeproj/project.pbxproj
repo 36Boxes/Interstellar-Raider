@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA7735FA2667A4FB005E7A92 /* Boost.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA7735F92667A4FB005E7A92 /* Boost.atlas */; };
 		CAB32B91265FFA4400BF176C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB32B90265FFA4400BF176C /* AppDelegate.swift */; };
 		CAB32B93265FFA4400BF176C /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = CAB32B92265FFA4400BF176C /* GameScene.sks */; };
 		CAB32B95265FFA4400BF176C /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = CAB32B94265FFA4400BF176C /* Actions.sks */; };
@@ -36,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CA7735F92667A4FB005E7A92 /* Boost.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Boost.atlas; sourceTree = "<group>"; };
 		CAB32B8D265FFA4400BF176C /* Interstellar Raider.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Interstellar Raider.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAB32B90265FFA4400BF176C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CAB32B92265FFA4400BF176C /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 		CAB32B8F265FFA4400BF176C /* Interstellar Raider */ = {
 			isa = PBXGroup;
 			children = (
+				CA7735F92667A4FB005E7A92 /* Boost.atlas */,
 				CAB32B90265FFA4400BF176C /* AppDelegate.swift */,
 				CAB32B92265FFA4400BF176C /* GameScene.sks */,
 				CAB32B94265FFA4400BF176C /* Actions.sks */,
@@ -234,6 +237,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA7735FA2667A4FB005E7A92 /* Boost.atlas in Resources */,
 				CAB32B9C265FFA4400BF176C /* Main.storyboard in Resources */,
 				CAB32B93265FFA4400BF176C /* GameScene.sks in Resources */,
 				CAB32B9E265FFA4500BF176C /* Assets.xcassets in Resources */,
