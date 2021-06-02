@@ -8,6 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		CA7735FA2667A4FB005E7A92 /* Boost.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA7735F92667A4FB005E7A92 /* Boost.atlas */; };
+		CA7735FF2667A698005E7A92 /* BackgroundImages.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA7735FE2667A698005E7A92 /* BackgroundImages.atlas */; };
+		CA7736042667A6A9005E7A92 /* BoostedBackground.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA7736032667A6A9005E7A92 /* BoostedBackground.atlas */; };
+		CA7736092667A6B9005E7A92 /* DoublePointsBackground.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA7736082667A6B9005E7A92 /* DoublePointsBackground.atlas */; };
+		CA77360E2667A9CF005E7A92 /* BoostedDoublePointsBackground.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA77360D2667A9CF005E7A92 /* BoostedDoublePointsBackground.atlas */; };
+		CA7736132667A9EC005E7A92 /* greenDiamond.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA7736122667A9EC005E7A92 /* greenDiamond.atlas */; };
+		CA7736182667A9F6005E7A92 /* purpleDiamond.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA7736172667A9F6005E7A92 /* purpleDiamond.atlas */; };
+		CA77361D2667AA1D005E7A92 /* blueDiamond.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA77361C2667AA1D005E7A92 /* blueDiamond.atlas */; };
+		CA7736222667AA2D005E7A92 /* Enemyflames.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA7736212667AA2D005E7A92 /* Enemyflames.atlas */; };
+		CA7736272667B09D005E7A92 /* EnemyBlue.atlas in Resources */ = {isa = PBXBuildFile; fileRef = CA7736262667B09D005E7A92 /* EnemyBlue.atlas */; };
 		CAB32B91265FFA4400BF176C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB32B90265FFA4400BF176C /* AppDelegate.swift */; };
 		CAB32B93265FFA4400BF176C /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = CAB32B92265FFA4400BF176C /* GameScene.sks */; };
 		CAB32B95265FFA4400BF176C /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = CAB32B94265FFA4400BF176C /* Actions.sks */; };
@@ -37,7 +46,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CA284C7D2667C74D00E0E5AF /* ADAM.CGPRO.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ADAM.CGPRO.otf; sourceTree = "<group>"; };
 		CA7735F92667A4FB005E7A92 /* Boost.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Boost.atlas; sourceTree = "<group>"; };
+		CA7735FE2667A698005E7A92 /* BackgroundImages.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = BackgroundImages.atlas; sourceTree = "<group>"; };
+		CA7736032667A6A9005E7A92 /* BoostedBackground.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = BoostedBackground.atlas; sourceTree = "<group>"; };
+		CA7736082667A6B9005E7A92 /* DoublePointsBackground.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = DoublePointsBackground.atlas; sourceTree = "<group>"; };
+		CA77360D2667A9CF005E7A92 /* BoostedDoublePointsBackground.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = BoostedDoublePointsBackground.atlas; sourceTree = "<group>"; };
+		CA7736122667A9EC005E7A92 /* greenDiamond.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = greenDiamond.atlas; sourceTree = "<group>"; };
+		CA7736172667A9F6005E7A92 /* purpleDiamond.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = purpleDiamond.atlas; sourceTree = "<group>"; };
+		CA77361C2667AA1D005E7A92 /* blueDiamond.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = blueDiamond.atlas; sourceTree = "<group>"; };
+		CA7736212667AA2D005E7A92 /* Enemyflames.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Enemyflames.atlas; sourceTree = "<group>"; };
+		CA7736262667B09D005E7A92 /* EnemyBlue.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = EnemyBlue.atlas; sourceTree = "<group>"; };
 		CAB32B8D265FFA4400BF176C /* Interstellar Raider.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Interstellar Raider.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAB32B90265FFA4400BF176C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CAB32B92265FFA4400BF176C /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -103,6 +122,15 @@
 		CAB32B8F265FFA4400BF176C /* Interstellar Raider */ = {
 			isa = PBXGroup;
 			children = (
+				CA7736262667B09D005E7A92 /* EnemyBlue.atlas */,
+				CA7736212667AA2D005E7A92 /* Enemyflames.atlas */,
+				CA77361C2667AA1D005E7A92 /* blueDiamond.atlas */,
+				CA7736172667A9F6005E7A92 /* purpleDiamond.atlas */,
+				CA7736122667A9EC005E7A92 /* greenDiamond.atlas */,
+				CA77360D2667A9CF005E7A92 /* BoostedDoublePointsBackground.atlas */,
+				CA7736082667A6B9005E7A92 /* DoublePointsBackground.atlas */,
+				CA7736032667A6A9005E7A92 /* BoostedBackground.atlas */,
+				CA7735FE2667A698005E7A92 /* BackgroundImages.atlas */,
 				CA7735F92667A4FB005E7A92 /* Boost.atlas */,
 				CAB32B90265FFA4400BF176C /* AppDelegate.swift */,
 				CAB32B92265FFA4400BF176C /* GameScene.sks */,
@@ -110,6 +138,7 @@
 				CAB32B96265FFA4400BF176C /* GameScene.swift */,
 				CAB32B98265FFA4400BF176C /* GameViewController.swift */,
 				CAB32B9A265FFA4400BF176C /* Main.storyboard */,
+				CA284C7D2667C74D00E0E5AF /* ADAM.CGPRO.otf */,
 				CAB32B9D265FFA4500BF176C /* Assets.xcassets */,
 				CAB32B9F265FFA4500BF176C /* Info.plist */,
 			);
@@ -238,10 +267,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA7735FA2667A4FB005E7A92 /* Boost.atlas in Resources */,
+				CA7736222667AA2D005E7A92 /* Enemyflames.atlas in Resources */,
 				CAB32B9C265FFA4400BF176C /* Main.storyboard in Resources */,
+				CA7736182667A9F6005E7A92 /* purpleDiamond.atlas in Resources */,
 				CAB32B93265FFA4400BF176C /* GameScene.sks in Resources */,
+				CA77361D2667AA1D005E7A92 /* blueDiamond.atlas in Resources */,
+				CA7735FF2667A698005E7A92 /* BackgroundImages.atlas in Resources */,
 				CAB32B9E265FFA4500BF176C /* Assets.xcassets in Resources */,
+				CA7736042667A6A9005E7A92 /* BoostedBackground.atlas in Resources */,
+				CA77360E2667A9CF005E7A92 /* BoostedDoublePointsBackground.atlas in Resources */,
 				CAB32B95265FFA4400BF176C /* Actions.sks in Resources */,
+				CA7736132667A9EC005E7A92 /* greenDiamond.atlas in Resources */,
+				CA7736272667B09D005E7A92 /* EnemyBlue.atlas in Resources */,
+				CA7736092667A6B9005E7A92 /* DoublePointsBackground.atlas in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
