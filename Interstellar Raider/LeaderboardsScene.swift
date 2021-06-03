@@ -8,28 +8,59 @@
 import Foundation
 import SpriteKit
 import UIKit
+import GameKit
 
 var s_ores = [Int64()]
 var names = [String()]
 var ranks = [Int()]
 
-class GameRoomTableView: UITableView,UITableViewDelegate,UITableViewDataSource {
-    var s_ores = [1,2,3,4,5,6]
-    var names = ["j", "j", "j", "j", "j", "j"]
-    var ranks = [1,2,3,4,5,6]
+class GameRoomTableView: UITableView,UITableViewDelegate,UITableViewDataSource, GKGameCenterControllerDelegate {
+    
+    var s_ores = [Int64()]
+    var names = [String()]
+    var ranks = [Int()]
+    
+    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
+        gameCenterViewController.dismiss(animated: true, completion: nil)
+    }
+    
+    func load_leaderboards(){
+        let Scores : GKLeaderboard = GKLeaderboard()
+        Scores.timeScope = .allTime
+        Scores.identifier = "InterstellarRaider"
+        Scores.loadScores { scores, error in
+            guard let scores = scores else {return}
+            self.s_ores.removeAll()
+            self.ranks.removeAll()
+            self.names.removeAll()
+            for score in scores{
+                let name = score.player.displayName
+                let scored = score.value
+                let rank = score.rank
+                self.s_ores.append(Int64(Int(scored)))
+                self.ranks.append(rank)
+                self.names.append(name)
+                
+                
+            }
+    }
+    }
+
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
         self.delegate = self
         self.dataSource = self
+        load_leaderboards()
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return s_ores.count
+        return s_ores.count + 1
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        print(names)
         let cell = tableView.dequeueReusableCell(withIdentifier: "leaderboardcell", for: indexPath) as!
             CustomTableViewCell
         if indexPath.row == 0{
@@ -39,18 +70,15 @@ class GameRoomTableView: UITableView,UITableViewDelegate,UITableViewDataSource {
             
             return cell
         }
-        let score = s_ores[indexPath.row]
-        let name = names[indexPath.row]
-        let rank = ranks[indexPath.row]
+        let score = s_ores[indexPath.row - 1]
+        let name = names[indexPath.row - 1]
+        let rank = ranks[indexPath.row - 1]
         
         cell.name.text = String(score)
         cell.rank.text = String(rank)
         cell.score.text = name
         
         return cell
-    }
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("You selected cell #\(indexPath.row)!")
     }
 }
 
@@ -88,6 +116,7 @@ class LeaderboardsScene: SKScene{
         
         let GameName = SKLabelNode(fontNamed: "ADAM.CGPRO")
         GameName.text = "Leaderboards"
+        GameName.name = "Leaderboards"
         GameName.fontSize = 80
         GameName.fontColor = SKColor.white
         GameName.position = CGPoint(x: self.size.width/2, y: self.size.height * 0.8)
@@ -96,6 +125,7 @@ class LeaderboardsScene: SKScene{
         
         let BackLabel = SKLabelNode(fontNamed: "ADAM.CGPRO")
         BackLabel.text = "  Back"
+        BackLabel.name = "Back"
         BackLabel.fontSize = 50
         BackLabel.fontColor = SKColor.white
         BackLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
@@ -104,12 +134,36 @@ class LeaderboardsScene: SKScene{
         self.addChild(BackLabel)
         
         let ReloadLabel = SKLabelNode(fontNamed: "ADAM.CGPRO")
-        ReloadLabel.text = "Reload Table"
+        ReloadLabel.text = "Refresh"
+        ReloadLabel.name = "Refresh"
         ReloadLabel.fontSize = 50
         ReloadLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.right
         ReloadLabel.position = CGPoint(x: self.size.width * 0.8, y: self.size.height * 0.9)
         ReloadLabel.zPosition = 100
         self.addChild(ReloadLabel)
+    }
+    
+    // function to make labels into buttons
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch: AnyObject in touches{
+            let pointOfTouch = touch.location(in: self)
+            let nodeTapped = atPoint(pointOfTouch)
+            
+            
+            if nodeTapped.name == "Back"{
+                gameTableView.removeFromSuperview()
+                let destination = HomeScene(size: self.size)
+                destination.scaleMode = self.scaleMode
+                let myTransition = SKTransition.fade(withDuration: 0.4)
+                self.view!.presentScene(destination, transition: myTransition)
+            }
+            
+            if nodeTapped.name == "Refresh"{
+                gameTableView.reloadData()
+            }
+            
+        }
     }
     
     func loadTextures(){
