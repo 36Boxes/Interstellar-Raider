@@ -74,7 +74,7 @@ class GameOverScene: SKScene{
         
         let GameOverLabel = SKLabelNode(fontNamed: "ADAM.CGPRO")
         GameOverLabel.text = "Game Over!"
-        GameOverLabel.position = CGPoint(x: self.size.width * 0.5, y: self.size.height * 0.7)
+        GameOverLabel.position = CGPoint(x: self.size.width * 0.5, y: self.size.height * 0.85)
         GameOverLabel.zPosition = 4
         GameOverLabel.fontSize = 120
         GameOverLabel.fontColor = SKColor.white
@@ -83,7 +83,7 @@ class GameOverScene: SKScene{
         let scoreLabel = SKLabelNode(fontNamed: "ADAM.CGPRO")
         scoreLabel.text = "Score: \(userScore)"
         scoreLabel.fontColor = SKColor.white
-        scoreLabel.fontSize = 100
+        scoreLabel.fontSize = 70
         scoreLabel.zPosition = 4
         scoreLabel.position = CGPoint(x: self.size.width * 0.5, y: self.size.height * 0.6)
         self.addChild(scoreLabel)
@@ -107,7 +107,7 @@ class GameOverScene: SKScene{
             saveHigh(number: userScore)
         }else{
             HighScoreLabel.text = "High Score: \(highscore)"
-            HighScoreLabel.fontSize = 100
+            HighScoreLabel.fontSize = 70
         }
         HighScoreLabel.fontColor = SKColor.white
         HighScoreLabel.position = CGPoint(x: self.size.width * 0.5, y: self.size.height * 0.5)
@@ -115,7 +115,7 @@ class GameOverScene: SKScene{
         self.addChild(HighScoreLabel)
         
         restartLabel.text = "Restart"
-        restartLabel.position = CGPoint(x: self.size.width * 0.5, y: self.size.height * 0.4)
+        restartLabel.position = CGPoint(x: self.size.width * 0.5, y: self.size.height * 0.3)
         restartLabel.zPosition = 4
         restartLabel.fontSize = 70
         self.addChild(restartLabel)

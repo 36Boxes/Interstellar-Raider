@@ -77,7 +77,7 @@ class HomeScene: SKScene , GKGameCenterControllerDelegate{
         GameName.fontSize = 80
         GameName.fontColor = SKColor.white
         GameName.position = CGPoint(x: self.size.width/2, y: self.size.height * 0.7)
-        GameName.zPosition = 1
+        GameName.zPosition = 10
         self.addChild(GameName)
         
         let GameStart = SKLabelNode(fontNamed: "ADAM.CGPRO")
@@ -85,7 +85,7 @@ class HomeScene: SKScene , GKGameCenterControllerDelegate{
         GameStart.fontSize = 70
         GameStart.fontColor = SKColor.white
         GameStart.position = CGPoint(x: self.size.width/2, y: self.size.height * 0.4)
-        GameStart.zPosition = 1
+        GameStart.zPosition = 10
         GameStart.name = "StartButton"
         self.addChild(GameStart)
         
@@ -95,9 +95,19 @@ class HomeScene: SKScene , GKGameCenterControllerDelegate{
         Leaderboards.fontSize = 70
         Leaderboards.fontColor = SKColor.white
         Leaderboards.position = CGPoint(x: self.size.width/2, y: self.size.height * 0.2)
-        Leaderboards.zPosition = 1
+        Leaderboards.zPosition = 10
         Leaderboards.name = "Leaderboards"
         self.addChild(Leaderboards)
+        
+        let Tutorial = SKLabelNode(fontNamed: "ADAM.CGPRO")
+        Tutorial.text = "Tutorial"
+        Tutorial.fontSize = 70
+        Tutorial.fontColor = SKColor.white
+        Tutorial.position = CGPoint(x: self.size.width/2, y: self.size.height * 0.1)
+        Tutorial.zPosition = 10
+        Tutorial.name = "Tutorial"
+        self.addChild(Tutorial)
+        
         SpawnBackgroundEnemies()
     }
     
@@ -274,6 +284,13 @@ class HomeScene: SKScene , GKGameCenterControllerDelegate{
             
             if nodeTapped.name == "Leaderboards"{
                 let destination = LeaderboardsScene(size: self.size)
+                destination.scaleMode = self.scaleMode
+                let myTransition = SKTransition.fade(withDuration: 0.4)
+                self.view!.presentScene(destination, transition: myTransition)
+            }
+            
+            if nodeTapped.name == "Tutorial"{
+                let destination = TutorialScene1(size: self.size)
                 destination.scaleMode = self.scaleMode
                 let myTransition = SKTransition.fade(withDuration: 0.4)
                 self.view!.presentScene(destination, transition: myTransition)
