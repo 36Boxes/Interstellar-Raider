@@ -29,6 +29,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
     var Heart3: SKSpriteNode!
     let background = SKSpriteNode(imageNamed: "glitter-universe-1-1")
     var enemy: SKSpriteNode!
+    var extraEnemy: SKSpriteNode!
     let player = SKSpriteNode(imageNamed: "Boost1")
     
     
@@ -346,7 +347,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         }
         enemy.physicsBody!.affectedByGravity = false
         enemy.physicsBody!.categoryBitMask = category
-        enemy.physicsBody!.collisionBitMask = PhysicsCatergories.Enemy | PhysicsCatergories.Bullet
+        enemy.physicsBody!.collisionBitMask = PhysicsCatergories.Bullet
         enemy.physicsBody!.contactTestBitMask = PhysicsCatergories.Player | PhysicsCatergories.Bullet
         
     }
@@ -354,9 +355,14 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
     func EnemySpawner(){
         let randomXStart = CGFloat.random(in: gameArea.minX..<gameArea.maxX)
         let randomXEnd = CGFloat.random(in: gameArea.minX..<gameArea.maxX)
+        let randomXStartExtra = CGFloat.random(in: gameArea.minX..<gameArea.maxX)
+        let randomXEndExtra = CGFloat.random(in: gameArea.minX..<gameArea.maxX)
         let startPoint = CGPoint(x: randomXStart, y: self.size.height * 1.2)
+        let startPointExtra = CGPoint(x: randomXStartExtra, y: self.size.height * 1.2)
         let endPoint = CGPoint(x: randomXEnd, y: -self.size.height * 0.2)
+        let endPointExtra = CGPoint(x: randomXEndExtra, y: -self.size.height * 0.2)
         let EnemyDecider = Int.random(in: 1..<8)
+        let Lucky5 = Int.random(in: 1..<6)
         if EnemyDecider == 1{
             createEnemy(image: "E1", name: "Enemy", category: PhysicsCatergories.Enemy)
         }
@@ -375,9 +381,18 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
             }
         }
         if EnemyDecider == 5{
-            let Lucky = Int.random(in: 1..<6)
-            if Lucky == 2{
+            if Lucky5 == 2{
                 createEnemy(image: "Blue1", name: "BlueDiamond", category: PhysicsCatergories.BlueDiamond)
+                extraEnemy = SKSpriteNode(imageNamed: "E1")
+                extraEnemy.name = "Enemy"
+                extraEnemy.physicsBody = SKPhysicsBody(rectangleOf: enemy.size)
+                extraEnemy.physicsBody!.affectedByGravity = false
+                extraEnemy.physicsBody!.categoryBitMask = PhysicsCatergories.Enemy
+                extraEnemy.physicsBody!.collisionBitMask = PhysicsCatergories.Bullet
+                extraEnemy.physicsBody!.contactTestBitMask = PhysicsCatergories.Player | PhysicsCatergories.Bullet
+                extraEnemy.position = startPointExtra
+                extraEnemy.zPosition = 1
+                self.addChild(extraEnemy)
             }
             else{
                 createEnemy(image: "GoldAsteroid", name: "GoldAsteroid", category: PhysicsCatergories.GoldAsteroid)
@@ -385,6 +400,16 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         }
         if EnemyDecider == 6{
             createEnemy(image: "GoldAsteroid", name: "GoldAsteroid", category: PhysicsCatergories.GoldAsteroid)
+            extraEnemy = SKSpriteNode(imageNamed: "E1")
+            extraEnemy.name = "Enemy"
+            extraEnemy.physicsBody = SKPhysicsBody(rectangleOf: enemy.size)
+            extraEnemy.physicsBody!.affectedByGravity = false
+            extraEnemy.physicsBody!.categoryBitMask = PhysicsCatergories.Enemy
+            extraEnemy.physicsBody!.collisionBitMask = PhysicsCatergories.Bullet
+            extraEnemy.physicsBody!.contactTestBitMask = PhysicsCatergories.Player | PhysicsCatergories.Bullet
+            extraEnemy.position = startPointExtra
+            extraEnemy.zPosition = 1
+            self.addChild(extraEnemy)
         }
         if EnemyDecider == 7{
             let Lucky = Int.random(in: 1..<4)
@@ -404,32 +429,51 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         let aim = SKAction.animate(with: EnemyBlueTextureArray, timePerFrame: 0.1)
         let blueAnimForever = SKAction.repeatForever(aim)
         
+        let diffXExtra = endPointExtra.x - startPointExtra.x
+        let diffYExtra = endPointExtra.y - startPointExtra.y
+        let amount2RotateExtra = atan2(diffYExtra, diffXExtra)
+        
+        
         let diffX = endPoint.x - startPoint.x
         let diffY = endPoint.y - startPoint.y
         let amount2Rotate = atan2(diffY, diffX)
         enemy.zRotation = amount2Rotate
         
         let moveEnemy = SKAction.move(to: endPoint, duration: 2)
+        let moveEnemyExtra = SKAction.move(to: endPointExtra, duration: 2.2)
         let rotate = SKAction.rotate(byAngle: 5, duration: 1)
+        let wait = SKAction.wait(forDuration: 0.4)
         let rotation = SKAction.repeatForever(rotate)
         let deleteEnemy = SKAction.removeFromParent()
         let wellDoneSoldier = SKAction.run(loselives)
         let moveAndRemove = SKAction.sequence([moveEnemy, deleteEnemy])
         let moveAndRemoveandLive = SKAction.sequence([moveEnemy, deleteEnemy, wellDoneSoldier])
+        let moveAndRemoveandLiveExtra = SKAction.sequence([moveEnemyExtra, deleteEnemy, wellDoneSoldier])
+        let waitMoveRemove = SKAction.sequence([wait, moveEnemyExtra, deleteEnemy])
         let AsteroidSequence = SKAction.group([rotation, moveAndRemove])
+        let AsteroidSequenceExtra = SKAction.group([rotation, waitMoveRemove])
         let RedEnemySequence = SKAction.group([redAnimForever, moveAndRemoveandLive])
         let BlueEnemySequence = SKAction.group([blueAnimForever, moveAndRemoveandLive])
+        let RedEnemySequenceExtra = SKAction.group([ redAnimForever, moveAndRemoveandLiveExtra])
+        let BlueEnemySequenceExtra = SKAction.group([ blueAnimForever, moveAndRemoveandLiveExtra])
         
-        if enemy.name == "Enemy"{
-            if EnemyDecider == 1{
-                enemy.run(RedEnemySequence)
-            }
-            if EnemyDecider == 2{
-                enemy.run(BlueEnemySequence)
-            }
-        
+        if EnemyDecider == 1{
+            enemy.run(RedEnemySequence)
         }
-    
+        else if EnemyDecider == 2{
+            enemy.run(BlueEnemySequence)
+        }
+        else if EnemyDecider == 5 && Lucky5 == 2{
+            extraEnemy.zRotation = amount2RotateExtra
+            extraEnemy.run(RedEnemySequenceExtra)
+            enemy.run(AsteroidSequenceExtra)
+
+        }
+        else if EnemyDecider == 6{
+            extraEnemy.zRotation = amount2RotateExtra
+            extraEnemy.run(BlueEnemySequenceExtra)
+            enemy.run(AsteroidSequenceExtra)
+        }
         else{enemy.run(AsteroidSequence)}
     }
     
@@ -444,7 +488,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         var levelDuration = TimeInterval()
         
         switch levelNumber {
-        case 1: levelDuration = 1
+        case 1: levelDuration = 1.1
         case 2: levelDuration = 0.8
         case 3: levelDuration = 0.6
         case 4: levelDuration = 0.5

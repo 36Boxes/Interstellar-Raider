@@ -27,7 +27,7 @@ class GameRoomTableView: UITableView,UITableViewDelegate,UITableViewDataSource, 
     func load_leaderboards(){
         let Scores : GKLeaderboard = GKLeaderboard()
         Scores.timeScope = .allTime
-        Scores.identifier = "InterstellarRaider"
+        Scores.identifier = "IR"
         Scores.loadScores { scores, error in
             guard let scores = scores else {return}
             self.s_ores.removeAll()

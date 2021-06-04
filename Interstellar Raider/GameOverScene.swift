@@ -279,7 +279,7 @@ class GameOverScene: SKScene{
     
     func saveHigh(number : Int){
         if GKLocalPlayer.local.isAuthenticated{
-            let scoreReporter = GKScore(leaderboardIdentifier: "InterstellarRaider")
+            let scoreReporter = GKScore(leaderboardIdentifier: "IR")
             scoreReporter.value = Int64(number)
             let ScoreArray : [GKScore] = [scoreReporter]
             GKScore.report(ScoreArray, withCompletionHandler: nil)
