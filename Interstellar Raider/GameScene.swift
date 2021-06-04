@@ -24,6 +24,9 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
     
     let ScoreLabel = SKLabelNode(fontNamed: "ADAM.CGPRO")
     let LivesLabel = SKLabelNode(fontNamed: "ADAM.CGPRO")
+    var Heart1: SKSpriteNode!
+    var Heart2: SKSpriteNode!
+    var Heart3: SKSpriteNode!
     let background = SKSpriteNode(imageNamed: "glitter-universe-1-1")
     var enemy: SKSpriteNode!
     let player = SKSpriteNode(imageNamed: "Boost1")
@@ -98,6 +101,9 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
     
     var PlayerShipTextureAtlas = SKTextureAtlas()
     var PlayerShipTextureArray: [SKTexture] = []
+    
+    var LostlifeTextureAtlas = SKTextureAtlas()
+    var LostlifeTextureArray: [SKTexture] = []
     
     var BackgroundTextureAtlas = SKTextureAtlas()
     var BackgroundTextureArray: [SKTexture] = []
@@ -175,25 +181,64 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         
         // Adding the lives label to the screen
         
-        LivesLabel.text = "Lives : \(lives)"
-        LivesLabel.fontSize = 70
-        LivesLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.right
-        LivesLabel.position = CGPoint(x: self.size.width * 0.8, y: self.size.height * 0.9)
-        LivesLabel.zPosition = 100
-        self.addChild(LivesLabel)
+        Heart1 = SKSpriteNode(imageNamed: "HeartNoBackground")
+        Heart1.size = CGSize(width: 75, height: 75)
+        Heart1.position = CGPoint(x: self.size.width * 0.78, y: self.size.height * 0.91)
+        Heart1.zPosition = 100
+        self.addChild(Heart1)
+        Heart2 = SKSpriteNode(imageNamed: "HeartNoBackground")
+        Heart2.size = CGSize(width: 75, height: 75)
+        Heart2.position = CGPoint(x: self.size.width * 0.72, y: self.size.height * 0.91)
+        Heart2.zPosition = 100
+        self.addChild(Heart2)
+        Heart3 = SKSpriteNode(imageNamed: "HeartNoBackground")
+        Heart3.size = CGSize(width: 75, height: 75)
+        Heart3.position = CGPoint(x: self.size.width * 0.66, y: self.size.height * 0.91)
+        Heart3.zPosition = 100
+        self.addChild(Heart3)
+        
         
         startNewLevel()
         
     }
 
     func loselives(){
-        lives -= 1
-        LivesLabel.text = "Lives : \(lives)"
-        
-        let scaleUp = SKAction.scale(to: 2.5, duration: 0.2)
-        let scaleDown = SKAction.scale(to: 1, duration: 0.2)
-        let sequence = SKAction.sequence([scaleUp, scaleDown])
-        LivesLabel.run(sequence)
+        if lives == 3{
+            lives -= 1
+            let scaleUp = SKAction.scale(to: 2.5, duration: 0.2)
+            let scaleDown = SKAction.scale(to: 0.8, duration: 0.2)
+            let changetexture = SKAction.run {
+                self.Heart1.texture = SKTexture(imageNamed: "emptyHeartv2")
+            }
+            let sequence = SKAction.sequence([scaleUp, scaleDown, changetexture])
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+            Heart1.run(sequence)
+
+        }
+        else if lives == 2{
+            lives -= 1
+            let scaleUp = SKAction.scale(to: 2.5, duration: 0.2)
+            let scaleDown = SKAction.scale(to: 0.8, duration: 0.2)
+            let changetexture = SKAction.run {
+                self.Heart2.texture = SKTexture(imageNamed: "emptyHeartv2")
+            }
+            let sequence = SKAction.sequence([scaleUp, scaleDown, changetexture])
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+            Heart2.run(sequence)
+
+        }
+        else if lives == 1{
+            lives -= 1
+            let scaleUp = SKAction.scale(to: 2.5, duration: 0.2)
+            let scaleDown = SKAction.scale(to: 0.8, duration: 0.2)
+            let changetexture = SKAction.run {
+                self.Heart3.texture = SKTexture(imageNamed: "emptyHeartv2")
+            }
+            let sequence = SKAction.sequence([scaleUp, scaleDown, changetexture])
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+            Heart3.run(sequence)
+
+        }
         
         if lives == 0{
             gameOver()
@@ -218,7 +263,33 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
             bullet.removeAllActions()
         }
         
-        self.enumerateChildNodes(withName: "OPPBOY"){
+        self.enumerateChildNodes(withName: "Enemy"){
+            enemy, stop in
+            enemy.removeAllActions()
+        }
+        
+        self.enumerateChildNodes(withName: "Asteroid"){
+            enemy, stop in
+            enemy.removeAllActions()
+        }
+        
+        self.enumerateChildNodes(withName: "Boost"){
+            enemy, stop in
+            enemy.removeAllActions()
+        }
+        self.enumerateChildNodes(withName: "GoldAsteroid"){
+            enemy, stop in
+            enemy.removeAllActions()
+        }
+        self.enumerateChildNodes(withName: "ROID"){
+            enemy, stop in
+            enemy.removeAllActions()
+        }
+        self.enumerateChildNodes(withName: "BlueDiamond"){
+            enemy, stop in
+            enemy.removeAllActions()
+        }
+        self.enumerateChildNodes(withName: "DoubleXP"){
             enemy, stop in
             enemy.removeAllActions()
         }
@@ -463,6 +534,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
     func loadTextures(){
 
         PlayerShipTextureAtlas = SKTextureAtlas(named: "Boost.atlas")
+        LostlifeTextureAtlas = SKTextureAtlas(named: "Lostlifeanim.atlas")
         BackgroundTextureAtlas = SKTextureAtlas(named: "BackgroundImages.atlas")
         BoostedBackgroundTextureAtlas = SKTextureAtlas(named: "BoostedBackground.atlas")
         DoublePointsBackgroundTextureAtlas = SKTextureAtlas(named: "DoublePointsBackground.atlas")
@@ -486,6 +558,11 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         for n in 1...PlayerShipTextureAtlas.textureNames.count{
             let texture = "Boost\(n).png"
             PlayerShipTextureArray.append(SKTexture(imageNamed: texture))
+        }
+        
+        for n in 1...LostlifeTextureAtlas.textureNames.count{
+            let texture = "lost\(n).png"
+            LostlifeTextureArray.append(SKTexture(imageNamed: texture))
         }
         
         for a in 1...PurpleDiamondTextureAtlas.textureNames.count{
@@ -541,6 +618,9 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         let xpback = SKAction.animate(with: DoublePointsBackgroundTextureArray, timePerFrame: 0.02)
         let xpback4eva = SKAction.repeatForever(xpback)
         
+        let lost = SKAction.animate(with: LostlifeTextureArray, timePerFrame: 0.1)
+        let lostrep = SKAction.repeat(lost, count: 2)
+        
         if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask{
             body1 = contact.bodyA
             body2 = contact.bodyB
@@ -565,6 +645,8 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
 
                 body2.node?.removeFromParent()
                 
+                player.run(lostrep)
+                
                 loselives()
             }
             else if CurrentRocketMode == RocketMode.Boosted{
@@ -577,6 +659,8 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
                 if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
 
                 body2.node?.removeFromParent()
+                
+                player.run(lostrep)
                 
                 loselives()
             }
@@ -745,6 +829,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
                 if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
                 
                 body2.node?.removeFromParent()
+                player.run(lostrep)
                 loselives()
             }
             else if CurrentRocketMode == RocketMode.Boosted{
@@ -757,6 +842,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
                 if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
 
                 body2.node?.removeFromParent()
+                player.run(lostrep)
                 loselives()
             }
         }
@@ -774,6 +860,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
                 if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1green")}
 
                 body2.node?.removeFromParent()
+                player.run(lostrep)
                 loselives()
             }
             else if CurrentRocketMode == RocketMode.Boosted{
@@ -786,6 +873,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
                 if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1purple")}
 
                 body2.node?.removeFromParent()
+                player.run(lostrep)
                 loselives()
             }
         }
@@ -803,6 +891,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
                 if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
 
                 body2.node?.removeFromParent()
+                player.run(lostrep)
                 loselives()
             }
             else if CurrentRocketMode == RocketMode.Boosted{
@@ -815,6 +904,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
                 if body2.node != nil{Explode(explodeposition: body2.node!.position, image: "explosion1red")}
 
                 body2.node?.removeFromParent()
+                player.run(lostrep)
                 loselives()
             }
         }
